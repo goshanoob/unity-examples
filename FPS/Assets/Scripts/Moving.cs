@@ -1,30 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+[RequireComponent(typeof(CharacterController))]
+[AddComponentMenu("Control Script/FPS Moving")]
 
 public class Moving : MonoBehaviour
 {
-    public float horizontalSensitivity = 3f;
-    public float verticalSensitivity = 3f;
-    // Максимальная высота прыжка.
-    private const float maxJump = 1f;
+    // Чувствительность к перемещению (скорость перемещения).
+    public float speed = 6f;
+    // Компонент контроллер персонажа.
+    private CharacterController _character;
+    public float gravity = -9.8f;
     private void Start()
     {
-        Rigidbody body = GetComponent<Rigidbody>();
-        if(body != null)
-        {
-            body.freezeRotation = true;
-        }
+        _character = GetComponent<CharacterController>();
     }
     void Update()
     {
+        // Время между кадрами (время кадра).
         float frameTime = Time.deltaTime;
         // Величины перемещения вдоль координатных осей с учетом времени между кадрами.
-        float forwardMoving = Input.GetAxis("Vertical") * horizontalSensitivity * frameTime,
-              sideMoving = Input.GetAxis("Horizontal") * verticalSensitivity * frameTime,
-              jump = Input.GetAxis("Jump") * frameTime;
-        //jump = transform.position.y + jump;
-        jump = Mathf.Clamp(jump, 0, maxJump);
-        transform.Translate(sideMoving, jump, forwardMoving);
+        float forwardMoving = Input.GetAxis("Vertical") * speed * frameTime,
+              sideMoving = Input.GetAxis("Horizontal") * speed * frameTime;
+        Vector3 motion = new Vector3(sideMoving, 0, forwardMoving);
+        // Ограничить длину вектора перемещения при движении по диагонали.
+        motion = Vector3.ClampMagnitude(motion, speed);
+        // Перевод вектора перемещения в абсолютную систему координат.
+        motion = transform.TransformDirection(motion);
+        // Добавить силу тяжести.
+        motion.y = gravity;
+        _character.Move(motion);
     }
 }

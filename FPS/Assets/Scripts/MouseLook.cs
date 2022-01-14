@@ -26,38 +26,51 @@ public class MouseLook : MonoBehaviour
         {
             body.freezeRotation = true;
         }
+        //axes = RotationAxes.rotateXAndY;
     }
 
     void Update()
     {
-        // Изменение вращения вокруг вертикальной оси.
-        float angleYValue = Input.GetAxis("Mouse X") * verticalSensitivity;
         // Изменение вращения вокруг горизонтальной оси.
-        float angleXValue = Input.GetAxis("Mouse Y") * horizontalSensitivity;
+        float deltaXValue = Input.GetAxis("Mouse Y") * horizontalSensitivity;
+        // Изменение вращения вокруг вертикальной оси.
+        float deltaYValue = Input.GetAxis("Mouse X") * verticalSensitivity;
         if (axes == RotationAxes.rotateX)
         {
-            float rotateY = transform.localEulerAngles.y;
-
-            _angleXValue -= angleXValue;
-            _angleXValue = Mathf.Clamp(_angleXValue, minHorizontalAngle, maxHorizontalAngle);
-            transform.localEulerAngles = new Vector3(_angleXValue, rotateY, 0);
-
-            //float rotateX = transform.localEulerAngles.x - angleXValue;
-            //rotateX = Mathf.Clamp(rotateX, minHorizontalAngle, maxHorizontalAngle);
-            //transform.localEulerAngles = new Vector3(rotateX, rotateY, 0);
+            // Изменить текущий угол поворота вокруг горизонтальной оси.ав
+            UpdateXAngle(deltaXValue);
+            // Зафиксировать текущий угол поворота вокруг вертикальной оси.
+            //_angleYValue = transform.localEulerAngles.y;
         }
         else if (axes == RotationAxes.rotateY)
         {
-            transform.Rotate(0, angleYValue, 0);
+            // Зафиксировать текущий угол поворота вокруг горизонтальной оси.
+            //_angleXValue = transform.localEulerAngles.x;
+            // Изменить текущий угол поворота вокруг вертикальной оси.
+            UpdateYAngle(deltaYValue);
         }
         else
         {
-            _angleYValue += angleYValue;
-            _angleXValue -= angleXValue;
-            _angleXValue = Mathf.Clamp(_angleXValue, minHorizontalAngle, maxHorizontalAngle);
-            transform.localEulerAngles = new Vector3(_angleXValue, _angleYValue, 0);
+            UpdateXAngle(deltaXValue);
+            UpdateYAngle(deltaYValue);
         }
+        // Обновить ориентацию.
+        transform.localEulerAngles = new Vector3(_angleXValue, _angleYValue, 0);
     }
 
-    // TODO: Добавить методы получения поворота камеры. Фиксировать теущие положения поворота при смене режимов.
+    private void UpdateXAngle(float delta)
+    {
+        // Изменить текущий угол поворота вокруг горизонтальной оси на величину delta.
+        // Вычитание, т.к. система координат левая - направление положительного поворота совпадает с движением стрелики часов (в отличие от направления движения мыши).
+        _angleXValue -= delta;
+        // Применить ограничения к углу поворота вокруг горизонтальной оси.
+        _angleXValue = Mathf.Clamp(_angleXValue, minHorizontalAngle, maxHorizontalAngle);
+    }
+
+    private void UpdateYAngle(float delta)
+    {
+        // Изменить текущий угол поворота вокруг вертикальной оси на величину delta.
+        // Сложение, т.к. направление перемещения совпадает с направлением движения мыши.
+        _angleYValue += delta;
+    }
 }
