@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RayCasting : MonoBehaviour
@@ -13,6 +11,15 @@ public class RayCasting : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+    private void OnGUI()
+    {
+        // Размер прицела.
+        float size = 22;
+        // Положение прицела на экране.
+        float positionX = _camera.pixelWidth / 2 - size / 4,
+              positionY = _camera.pixelHeight / 2 - size / 2;
+        GUI.Label(new Rect(positionX, positionY, size, size), "O");
+    }
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -22,7 +29,16 @@ public class RayCasting : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo))
             {
-                StartCoroutine(SphereController(hitInfo.point));
+                
+                TargetReaction target = hitInfo.transform.gameObject.GetComponent<TargetReaction>();
+                if (target != null)
+                {
+                    target.ShowReactToHit(originPoint: _camera.transform.position, hitPoint: hitInfo.point);
+                }
+                else
+                {
+                    StartCoroutine(SphereController(hitInfo.point));
+                }
             }
         }
     }
@@ -32,14 +48,5 @@ public class RayCasting : MonoBehaviour
         sphere.transform.position = spherePosition;
         yield return new WaitForSeconds(_timeForDestroy);
         Destroy(sphere);
-    }
-    private void OnGUI()
-    {
-        // Размер прицела.
-        float size = 22; 
-        // Положение прицела на экране.
-        float positionX = _camera.pixelWidth / 2 - size / 4, 
-              positionY = _camera.pixelHeight / 2 - size / 2;
-        GUI.Label(new Rect(positionX, positionY, size, size), "O");
     }
 }
