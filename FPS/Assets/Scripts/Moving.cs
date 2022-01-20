@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// Сценарий перемещения игрового объекта клавишами клавиатуры.
+
+using UnityEngine;
 
 // Требуется компонент игорового объекта CharacterController.
 [RequireComponent(typeof(CharacterController))]

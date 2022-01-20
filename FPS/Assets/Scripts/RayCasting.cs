@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// Сценарий срельбы по мишеням в FPS.
+
+using System.Collections;
 using UnityEngine;
 
 public class RayCasting : MonoBehaviour

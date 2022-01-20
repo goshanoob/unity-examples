@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+﻿// Сценарий упрвления ориентацией камеры при помощи мыши.
 
+using UnityEngine;
 public class MouseLook : MonoBehaviour
 {
     // Варианты вращений вокруг горизонтальной и\или вертикальной осей.

@@ -1,5 +1,6 @@
-using UnityEngine;
+// Сценарий генерации игровых объектов на сцене.
 
+using UnityEngine;
 public class SceneController : MonoBehaviour
 {
     // Сериализованное поле для выбора префаба врага.

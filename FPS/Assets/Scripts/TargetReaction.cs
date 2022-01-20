@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿// Сценарий поведения мишени в ответ на попадание в нее.
 
+using System.Collections;
+using UnityEngine;
 public class TargetReaction : MonoBehaviour
 {
     // Сила, прикладываемая к мишени по умолчанию.
