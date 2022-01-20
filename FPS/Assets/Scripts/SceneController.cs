@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    // Сериализованное поле для выбора префаба врага.
+    [SerializeField] private GameObject enemyPrefab;
+    // Новый экземпляр врага.
+    private GameObject _enemy;
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if(_enemy == null)
+        {
+            _enemy = Instantiate(enemyPrefab);
+            _enemy.transform.position = new Vector3(0, 1, 0);
+            _enemy.transform.Rotate(0, Random.Range(0, 360), 0);
+        }
     }
 }
