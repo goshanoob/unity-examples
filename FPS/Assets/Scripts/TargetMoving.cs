@@ -1,35 +1,34 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TargetMoving : MonoBehaviour
 {
-    public float speed = 5f;
-    private Vector3 currentDirection;
-    // Start is called before the first frame update
-    void Start()
-    {
-        currentDirection = new Vector3(0, 0, -speed * Time.deltaTime);
-    }
-
-    // Update is called once per frame
+    // Расстояние до препятствия для смены направления движения.
+    public float minDistance = 1f;
+    // Скорость движения мишени.
+    public float targetSpeed = 5f;
+    // Размер мишени.
+    public float targetSize = 1f;
     void Update()
     {
-        if (isWallNear())
+        // Минимальное и максимальное значения случайного угла мены направления движения цели.
+        float minAngle = -110, maxAndle = 110;
+        // Если впереди препятствие.
+        if (isBarrierNear())
         {
-            currentDirection = new Vector3(Random.value, Random.value, Random.value);
+            // Повернуть мишень на случайный угол вокруг вертикальной оси для смены направления движения.
+            transform.Rotate(0, Random.Range(minAngle, maxAndle), 0);
         }
-        transform.Translate(currentDirection.normalized * speed * Time.deltaTime);
-
+        // Переместить мишень вперед вдоль оси Z.
+        transform.Translate(0, 0, targetSpeed * Time.deltaTime);
     }
 
-    private bool isWallNear()
+    private bool isBarrierNear()
     {
-        Vector3 currentPosition = transform.position;
-        Vector3 targetDirection = new Vector3(currentPosition.x, currentPosition.y, currentPosition.z + 1);
-        Ray ray = new Ray(transform.position, targetDirection);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        // Бросить луч в форме сферы из текущего положения перемещения цели размером targetSize в положительном направлении оси Z.
+        if (Physics.SphereCast(transform.position, targetSize, transform.forward, out RaycastHit hitInfo))
         {
-            Debug.Log(hitInfo.distance);
-            if (hitInfo.distance  < 0.5)
+            // Если препятствие близко.
+            if (hitInfo.distance  < minDistance)
             {
                 return true;
             }

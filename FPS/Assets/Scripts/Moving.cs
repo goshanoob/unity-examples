@@ -1,32 +1,35 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
+// РўСЂРµР±СѓРµС‚СЃСЏ РєРѕРјРїРѕРЅРµРЅС‚ РёРіРѕСЂРѕРІРѕРіРѕ РѕР±СЉРµРєС‚Р° CharacterController.
 [RequireComponent(typeof(CharacterController))]
+// Р”РѕР±Р°РІРёС‚СЊ СЃРєСЂРёРїС‚ РІ РјРµРЅСЋ РґРѕР±Р°РІР»РµРЅРёСЏ РєРѕРјРїРѕРЅРµРЅС‚РѕРІ.
 [AddComponentMenu("Control Script/FPS Moving")]
 
 public class Moving : MonoBehaviour
 {
-    // Чувствительность к перемещению (скорость перемещения).
+    // Р§СѓРІСЃС‚РІРёС‚РµР»СЊРЅРѕСЃС‚СЊ Рє РїРµСЂРµРјРµС‰РµРЅРёСЋ (СЃРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёСЏ).
     public float speed = 6f;
-    // Компонент контроллер персонажа.
+    // РљРѕРјРїРѕРЅРµРЅС‚-РєРѕРЅС‚СЂРѕР»Р»РµСЂ РїРµСЂСЃРѕРЅР°Р¶Р°.
     private CharacterController _character;
     public float gravity = -9.8f;
     private void Start()
     {
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєРѕРЅС‚СЂРѕР»Р»РµСЂР° РїРµСЂСЃРѕРЅР°Р¶Р°.
         _character = GetComponent<CharacterController>();
     }
     void Update()
     {
-        // Время между кадрами (время кадра).
+        // Р’СЂРµРјСЏ РјРµР¶РґСѓ РєР°РґСЂР°РјРё (РІСЂРµРјСЏ РєР°РґСЂР°).
         float frameTime = Time.deltaTime;
-        // Величины перемещения вдоль координатных осей с учетом времени между кадрами.
+        // Р’РµР»РёС‡РёРЅС‹ РїРµСЂРµРјРµС‰РµРЅРёР№ РІРґРѕР»СЊ РєРѕРѕСЂРґРёРЅР°С‚РЅС‹С… РѕСЃРµР№ СЃ СѓС‡РµС‚РѕРј РІСЂРµРјРµРЅРё РјРµР¶РґСѓ РєР°РґСЂР°РјРё.
         float forwardMoving = Input.GetAxis("Vertical") * speed * frameTime,
               sideMoving = Input.GetAxis("Horizontal") * speed * frameTime;
         Vector3 motion = new Vector3(sideMoving, 0, forwardMoving);
-        // Ограничить длину вектора перемещения при движении по диагонали.
+        // РћРіСЂР°РЅРёС‡РёС‚СЊ РґР»РёРЅСѓ РІРµРєС‚РѕСЂР° РїРµСЂРµРјРµС‰РµРЅРёСЏ РїСЂРё РґРІРёР¶РµРЅРёРё РїРѕ РґРёР°РіРѕРЅР°Р»Рё.
         motion = Vector3.ClampMagnitude(motion, speed);
-        // Перевод вектора перемещения в абсолютную систему координат.
+        // РџСЂРµРґСЃС‚Р°РІРёС‚СЊ РІРµРєС‚РѕСЂ РїРµСЂРµРјРµС‰РµРЅРёСЏ РІ Р°Р±СЃРѕР»СЋС‚РЅРѕР№ СЃРёСЃС‚РµРјРµ РєРѕРѕСЂРґРёРЅР°С‚.
         motion = transform.TransformDirection(motion);
-        // Добавить силу тяжести.
+        // Р”РѕР±Р°РІРёС‚СЊ СЃРёР»Сѓ С‚СЏР¶РµСЃС‚Рё.
         motion.y = gravity;
         _character.Move(motion);
     }
