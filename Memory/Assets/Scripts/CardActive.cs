@@ -1,23 +1,22 @@
-// ������, ����������� ���������� ������� �����.
+// Скрипт, управляющий состоянием карт.
 
 using UnityEngine;
 
 public class CardActive : MonoBehaviour
 {
+    // Поле для добавленя верхней карты.
     [SerializeField] private GameObject cardTop;
-    [SerializeField] private Sprite image;
 
-    private void Start()
+    public void SetCard(Sprite image)
     {
         GetComponent<SpriteRenderer>().sprite = image;
     }
     private void OnMouseDown()
     {
-        Debug.Log("1 " + cardTop.activeSelf);
+        // Если верхняя карта видима, сделать невидимой.
         if (cardTop.activeSelf)
         {
             cardTop.SetActive(false);
-            Debug.Log("2 " + cardTop.activeSelf);
         }
     }
 }
