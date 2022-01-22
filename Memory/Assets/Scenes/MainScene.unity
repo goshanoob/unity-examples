@@ -460,7 +460,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c732015fdb0c0444386475932cbe6fb3, type: 3}
   - {fileID: 21300000, guid: 554386f4eaf5bc5478383071203bc169, type: 3}
   - {fileID: 21300000, guid: 1f6f6c88812d43340955a45363327e86, type: 3}
-  card: {fileID: 1227722731}
+  originCard: {fileID: 1227722731}
 --- !u!1 &2049672558
 GameObject:
   m_ObjectHideFlags: 0
