@@ -1,15 +1,25 @@
-// Скрипт для генерации карт на сцене.
+// Скрипт для генерации карт на сцене, управления сценой.
 
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class SceneController : MonoBehaviour
 {
-    // Количество видов карт по умолчанию.
-    const int sortCount = 4;
     // Поле для добавления видов карт.
     [SerializeField] private Sprite[] cardSprites = new Sprite[sortCount];
     // Поле для ссылки на исходную карту на сцене.
     [SerializeField] private CardActive originCard;
     // [SerializeField] private GameObject card;
+    // Поле для выбора объекта, выводящего надпись о счете игрока.
+    [SerializeField] private TextMesh scoreText;
+
+    // Первая открытая карта и вторая открытые карты.
+    private CardActive _firstOpendCard, _secondOpendCard;
+    // Счет игрока.
+    private int _score = 0;
+
+    // Количество видов карт по умолчанию.
+    public const int sortCount = 4;
     // Количество рядов карт.
     public const int rowCount = 2;
     // Количество столбцов карт.
@@ -17,6 +27,16 @@ public class SceneController : MonoBehaviour
     // Расстояние между соответствующими точками карт по горизонтали и вертикали.
     public const float offsetX = 2.5f;
     public const float offsetY = 3.5f;
+
+    // Свойство, определяющее возможность открытия следующей карты.
+    public bool CanBeOpened
+    {
+        get
+        {
+            // Нельзя открыть больше двух карт.
+            return _secondOpendCard == null;
+        }
+    }
 
     private void Start()
     {
@@ -38,7 +58,7 @@ public class SceneController : MonoBehaviour
             newCard.SetCard(cardSet[i], cardSprites[cardSet[i]]);
             // Длиннее, но то же самое.
             //card.GetComponent<CardActive>().SetCard(cardSprites[Random.Range(0, cardSprites.Length)]);
-            
+
             // Вычислить положение новой карты.
             x += offsetX;
             // Если ряд заполнен, начать новый ряд.
@@ -55,7 +75,7 @@ public class SceneController : MonoBehaviour
         // Получить случайную последовательность карт по две одинаковые карты в наборе.
         int cardCount = 2 * sortCount;
         int[] cardSet = new int[cardCount];
-        for(int i = 0; i < cardCount; i++)
+        for (int i = 0; i < cardCount; i++)
         {
             cardSet[i] = i / 2;
         }
@@ -68,5 +88,49 @@ public class SceneController : MonoBehaviour
             cardSet[i] = tmp;
         }
         return cardSet;
+    }
+
+    public void OpenCard(CardActive openCard)
+    {
+        // Сохранить ссылку на очередную (из двух) открытую карту.
+        if (_firstOpendCard == null)
+        {
+            _firstOpendCard = openCard;
+        }
+        else
+        {
+            _secondOpendCard = openCard;
+            // Сравнить карты.
+            StartCoroutine(CheckMatches());
+        }
+    }
+
+    private IEnumerator CheckMatches()
+    {
+        if(_firstOpendCard.CardId == _secondOpendCard.CardId)
+        {
+            // Увиличить счет игрока, если карты совпали.
+            _score++;
+            // Вывести счет на экран.
+            scoreText.text = "Счет: " + _score;
+        }
+        else
+        {
+            // Скрыть несовпавшие карты.
+            // Время до сокрытия несовпавших карт.
+            const float showTime = 1f;
+            yield return new WaitForSeconds(showTime);
+            _firstOpendCard.hideCard();
+            _secondOpendCard.hideCard();
+        }
+        // Удалить ссылки на карты при любом исходе проверки для дальнейших сравнений.
+        _firstOpendCard = null;
+        _secondOpendCard = null;
+    }
+
+    public void Restart()
+    {
+        // Перезагрузить сцену.
+        SceneManager.LoadScene("MainScene");
     }
 }
